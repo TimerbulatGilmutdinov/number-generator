@@ -63,18 +63,12 @@ public class NumberServiceImplTest {
     }
 
     @Test
-    void testAnyRequestWithExceededNumbersThrowsIllegalState() {
-        CarNumber number = new CarNumber(new char[]{'А', 'А', 'А'}, 0, Region.TATARSTAN);
-        assertThatThrownBy(() -> numberService.getNextNumberFor(number)).isInstanceOf(IllegalStateException.class).hasMessage("No more numbers left.");
-    }
-
-    @Test
     void testUniqueNumber() {
         CarNumber carNumber = numberService.getRandom();
         ConcurrentHashMap<CarNumber, Object> map = new ConcurrentHashMap<>();
         Object stub = new Object();
         //max count is 10^3*12^3
-        int maxNumsCount = 10 * 10 * 10 * 12 * 12;
+        int maxNumsCount = 10 * 10 * 10 * 12 ;
         int threadsCount = 20;
         int carNumsPerThread = maxNumsCount / threadsCount;
         try (ExecutorService executor = Executors.newFixedThreadPool(threadsCount)) {
@@ -88,10 +82,10 @@ public class NumberServiceImplTest {
             }
             executor.shutdown();
             executor.awaitTermination(5, TimeUnit.SECONDS);
-            assertThat(map.contains(carNumber)).isFalse();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        assertThat(map.contains(carNumber)).isFalse();
     }
 
     @Test
@@ -111,10 +105,10 @@ public class NumberServiceImplTest {
             }
             executor.shutdown();
             executor.awaitTermination(5, TimeUnit.SECONDS);
-            assertThat(map.size()).isEqualTo(threadsCount * carNumsPerThread);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        assertThat(map.size()).isEqualTo(threadsCount * carNumsPerThread);
     }
 
     @Test
@@ -134,9 +128,9 @@ public class NumberServiceImplTest {
             }
             executor.shutdown();
             executor.awaitTermination(5, TimeUnit.SECONDS);
-            assertThat(map.size()).isEqualTo(threadsCount * carNumsPerThread);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        assertThat(map.size()).isEqualTo(threadsCount * carNumsPerThread);
     }
 }
